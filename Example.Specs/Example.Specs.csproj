@@ -52,8 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MembershipSpecs.cs" />
+    <Compile Include="ProjectSpecs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UniquenessSpecs.cs" />
+    <Compile Include="IndexSpecs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

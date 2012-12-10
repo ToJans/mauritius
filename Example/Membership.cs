@@ -5,73 +5,74 @@ namespace Example
     {
         namespace Membership
         {
-            public interface ICommands
+            public interface IHandleCommands
             {
                 void RegisterMember(string MemberId);
             }
 
-            public interface IEvents
+            public interface IHandleEvents
             {
                 void MemberRegistered(string MemberId);
             }
 
-            public interface IState
+            public interface IQuery
             {
                 bool IsExistingMember(string MemberId);
             }
         }
     }
 
-    public class Membership : Contracts.Membership.ICommands
+    public class Membership : Contracts.Membership.IHandleCommands
     {
-        MembershipState state = null;
-        public Contracts.Membership.IEvents Modifier = null;
+        public Contracts.Membership.IQuery Query = null;
+        public Contracts.Membership.IHandleEvents Handle = null;
 
-        public Membership()
+        public Membership(Contracts.Membership.IQuery Queries,Contracts.Membership.IHandleEvents EventHandlers)
         {
-            state = new MembershipState();
-            Modifier = new MembershipStateModifier(state);
+            this.Handle = EventHandlers;
+            this.Query = Queries;
         }
 
         public void RegisterMember(string MemberId)
         {
             Guard.AgainstNullOrWhitespace(MemberId, "The member id has to contain at least one non-whitespace character");
-            Guard.Against(state.IsExistingMember(MemberId), "This member id has already been registered");
-            Modifier.MemberRegistered(MemberId);
+            Guard.Against(Query.IsExistingMember(MemberId), "This member id has already been registered");
+            Handle.MemberRegistered(MemberId);
         }
     }
 
-    public class MembershipState : Contracts.Membership.IState
+    public class MembershipState
     {
-        public const string UNIQUENESS_KEY = "members";
+        public static readonly string IndexName = "members";
+    }
 
-        public UniquenessState UniquenessState;
+    public class MembershipQueries : Contracts.Membership.IQuery
+    {
+        Contracts.Index.IQuery qIndex = null;
 
-        public MembershipState()
+        public MembershipQueries(Contracts.Index.IQuery qIndex)
         {
-            UniquenessState = new UniquenessState();
+            this.qIndex = qIndex;
         }
 
         public bool IsExistingMember(string MemberId)
         {
-            return UniquenessState.HasUniqueValue(UNIQUENESS_KEY, MemberId);
+            return qIndex.ContainsValue(MembershipState.IndexName, MemberId);
         }
     }
 
-    public class MembershipStateModifier : Contracts.Membership.IEvents
+    public class MembershipEventhandlers : Contracts.Membership.IHandleEvents
     {
-        UniquenessModifier UniquenessModifier=null;
-        MembershipState state = null;
+        Contracts.Index.IHandleEvents hIndex=null;
 
-        public MembershipStateModifier(MembershipState state)
+        public MembershipEventhandlers(Contracts.Index.IHandleEvents hIndex)
         {
-            this.state = state;
-            this.UniquenessModifier = new UniquenessModifier(state.UniquenessState);
+            this.hIndex = hIndex;
         }
 
         public void MemberRegistered(string MemberId)
         {
-            UniquenessModifier.UniqueValueAdded(MembershipState.UNIQUENESS_KEY, MemberId);
+            hIndex.ValueAdded(MembershipState.IndexName, MemberId);
         }
     }
 }

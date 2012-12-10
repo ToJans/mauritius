@@ -12,16 +12,21 @@ namespace Example.Specs
         public const string yet_another_member = "members/3";
 
         Membership When;
-        Contracts.Membership.IEvents Given;
-        Mock<Contracts.Membership.IEvents> Then;
+        Contracts.Membership.IHandleEvents Given;
+        Mock<Contracts.Membership.IHandleEvents> Then;
 
         [TestInitialize]
         public void Init()
         {
-            When = new Membership();
-            Given = When.Modifier;
-            Then = new Mock<Contracts.Membership.IEvents>();
-            When.Modifier = Then.Object;
+            var sIndex = new IndexState();
+            var qIndex = new IndexQueries(sIndex);
+            var hIndex = new IndexEventhandlers(sIndex);
+            var qMembership = new MembershipQueries(qIndex);
+            var hMembership = new MembershipEventhandlers(hIndex);
+            When = new Membership(qMembership,hMembership);
+            Given = When.Handle;
+            Then = new Mock<Contracts.Membership.IHandleEvents>();
+            When.Handle = Then.Object;
         }
 
         [TestMethod]
