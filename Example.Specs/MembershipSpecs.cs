@@ -26,7 +26,7 @@ namespace Example.Specs
         }
 
         [TestMethod]
-        public void Registering_a_new_user_should_succeed()
+        public void Registering_a_new_member_should_succeed()
         {
             When.RegisterMember(MemberId);
 
@@ -34,7 +34,7 @@ namespace Example.Specs
         }
 
         [TestMethod, ExpectedException(typeof(InvalidOperationException), "Duplicate memberid")]
-        public void Registering_a_user_twice_should_fail()
+        public void Registering_a_member_twice_should_fail()
         {
             Given.MemberRegistered(MemberId);
 
