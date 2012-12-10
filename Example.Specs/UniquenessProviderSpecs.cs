@@ -33,7 +33,7 @@ namespace Example.Specs
             Then.Verify(x => x.UniqueValueAdded(some_category, some_value));
         }
 
-        [TestMethod, ExpectedException(typeof(InvalidOperationException), "This value is not unique")]
+        [TestMethod, ExpectedException(typeof(InvalidOperationException))]
         public void Adding_a_unique_value_to_the_same_category_twice_should_fail()
         {
             Given.UniqueValueAdded(some_category, some_value);

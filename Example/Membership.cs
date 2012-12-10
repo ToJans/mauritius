@@ -35,8 +35,8 @@ namespace Example
 
         public void RegisterMember(string MemberId)
         {
-            Guard.AgainstNullOrWhitespace(MemberId, "UserId has to contain at least one non-whitespace character");
-            Guard.Against(state.IsExistingMember(MemberId), "Duplicate userid");
+            Guard.AgainstNullOrWhitespace(MemberId, "The member id has to contain at least one non-whitespace character");
+            Guard.Against(state.IsExistingMember(MemberId), "This member id has already been registered");
             Modifier.MemberRegistered(MemberId);
         }
     }

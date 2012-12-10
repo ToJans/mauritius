@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -46,7 +43,15 @@ namespace Example.Specs
             Then.Verify(x => x.MemberRegistered(yet_another_member));
         }
 
-        [TestMethod, ExpectedException(typeof(InvalidOperationException), "Duplicate memberid")]
+        [TestMethod,ExpectedException(typeof(InvalidOperationException))]
+        public void Registering_a_member_with_a_whitespace_id_should_fail()
+        {
+            When.RegisterMember("   \t");
+
+        }
+
+
+        [TestMethod, ExpectedException(typeof(InvalidOperationException))]
         public void Registering_a_member_twice_should_fail()
         {
             Given.MemberRegistered(a_member);
