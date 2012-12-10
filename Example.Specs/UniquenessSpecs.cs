@@ -5,7 +5,7 @@ using Moq;
 namespace Example.Specs
 {
     [TestClass]
-    public class UniquenessProviderSpecs
+    public class UniquenessSpecs
     {
         const string some_category = "Some category";
         const string another_category = "Another category";
